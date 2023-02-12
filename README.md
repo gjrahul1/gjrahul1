@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @gjrahul1
 - 👀 I’m interested in Artifical Intelligence, Machine Learning & Web Development.
-- 🌱 I’m currently learning Data Science & Machine Learning
+- 🌱 I’m currently learning Data Structures & Algorithms
 - 💞️ I’m looking to collaborate on projects
 - 📫 How to reach me : g.j.rahul1@gmail.com
 
