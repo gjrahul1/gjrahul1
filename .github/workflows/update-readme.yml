@@ -20,19 +20,21 @@ jobs:
       uses: actions/github-script@v6
       with:
         script: |
+          const username = 'gjrahul1';  // Replace with your GitHub username
+          const perPage = 5;  // Number of events to fetch
+
           try {
             const { data: events } = await github.activity.listPublicEventsForUser({
-              username: 'gjrahul1',  # Replace with your GitHub username
-              per_page: 5
+              username: username,
+              per_page: perPage
             });
 
             const activities = events.map(event => {
-              const type = event.type;
               const repo = event.repo.name;
               const url = `https://github.com/${repo}`;
               let action;
 
-              switch (type) {
+              switch (event.type) {
                 case 'PushEvent':
                   action = 'pushed to';
                   break;
@@ -55,6 +57,7 @@ jobs:
             return activities;
           } catch (error) {
             core.setFailed(`Error fetching activities: ${error.message}`);
+            return '';
           }
 
     - name: Log Activities
@@ -103,4 +106,4 @@ jobs:
         # Push the changes to the repo
         git push || echo "Push failed"
       env:
-        GH_TOKEN: ${{ secrets.ACTIVITIES_PULL }}  # Ensure token is in Secrets
+        GH_TOKEN: ${{secrets.ACTIVITIES_PULL}}  # Ensure token is in Secrets
