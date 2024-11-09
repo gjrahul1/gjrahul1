@@ -24,16 +24,10 @@ jobs:
           const perPage = 5;  // Number of events to fetch
 
           try {
-            console.log('Fetching GitHub activity...');
-            
-            // Fetch public events using the correct API method
-            const { data: events } = await github.request('GET /users/{username}/events/public', {
-              username: username
+            const { data: events } = await github.activity.listPublicEventsForUser({
+              username: username,
+              per_page: perPage
             });
-
-            if (!events || events.length === 0) {
-              throw new Error('No events found.');
-            }
 
             const activities = events.map(event => {
               const repo = event.repo.name;
@@ -62,14 +56,14 @@ jobs:
 
             return activities;
           } catch (error) {
-            console.error('Error fetching activities:', error);
             core.setFailed(`Error fetching activities: ${error.message}`);
             return '';
           }
 
     - name: Log Activities
       run: |
-        echo "Fetched Activities: ${{ steps.get-activities.outputs.result }}"
+        activities="${{ steps.get-activities.outputs.result }}"
+        echo "Fetched Activities: $activities"
 
     - name: Check if Activities Exist
       run: |
@@ -86,7 +80,7 @@ jobs:
         readme=$(cat README.md)
         echo "Original README content: $readme"
 
-        # Update the README content by replacing the activities section
+        # Escape special characters in activities string to avoid shell errors
         updated_readme=$(echo "$readme" | sed -e "/<!--START_SECTION:activity-->/, /<!--END_SECTION:activity-->/c\<!--START_SECTION:activity-->\n$activities\n<!--END_SECTION:activity-->")
         
         # Log the updated README content
@@ -113,4 +107,4 @@ jobs:
         # Push the changes to the repo
         git push || echo "Push failed"
       env:
-        ReadMe_WorkFlow_Display: ${{ secrets.ReadMe_WorkFlow_Display }}  # Use the secret 'ReadMe_WorkFlow_Display'
+        GH_TOKEN: ${{secrets.ReadMe_WorkFlow_Display}}  # Use the correct secret name here
