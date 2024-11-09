@@ -39,6 +39,14 @@
   <h2>Recent GitHub Activity</h2>
 
 <!--START_SECTION:activity-->
+- name: Update README
+  id: update-readme
+  run: |
+    readme=$(cat README.md)
+    activities="${{ steps.get-activities.outputs.result }}"
+    updated_readme=$(echo "$readme" | sed -e "/<!--START_SECTION:activity-->/, /<!--END_SECTION:activity-->/c\<!--START_SECTION:activity-->\n$activities\n<!--END_SECTION:activity-->")
+    echo "$updated_readme" > README.md
+
 <!--END_SECTION:activity-->
 
 # Projects
