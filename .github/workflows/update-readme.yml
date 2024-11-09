@@ -1,70 +1,64 @@
-name: Fetch GitHub Activities
+name: Update README with Activity
 
 on:
   push:
     branches:
-      - main
-  schedule:
-    - cron: '0 * * * *'  # This will run the workflow every hour (adjust as necessary)
+      - main  # Change this to your default branch if it's not 'main'
 
 jobs:
-  fetch-activities:
+  update-readme:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '14'  # You can specify the version you need
+      - name: Fetch last 5 commits, merges, and pushes
+        id: fetch_activity
+        run: |
+          # Fetch the last 5 commits
+          commits=$(git log -n 5 --pretty=format:"* %h - %s (%an) - %ar" --no-merges)
+          merges=$(git log --merges -n 5 --pretty=format:"* %h - %s (%an) - %ar")
+          echo "Commits: $commits" >> activity.txt
+          echo "Merges: $merges" >> activity.txt
+          echo "Activity: $commits" > activity.txt
+          cat activity.txt
 
-    - name: Install Axios
-      run: npm install axios
+      - name: Update README.md
+        run: |
+          # Read the existing README.md
+          readme_file="README.md"
+          start_marker="<!--START_SECTION:activity-->"
+          end_marker="<!--END_SECTION:activity-->"
+          
+          # Get the activity content
+          activity_content=$(cat activity.txt)
 
-    - name: Fetch Recent GitHub Activities
-      id: get-activities
-      run: |
-        echo "Fetching recent activities for gjrahul1..."
-        node -e "
-          const axios = require('axios');
+          # Update the README file
+          awk -v start="$start_marker" -v end="$end_marker" -v content="$activity_content" '
+          BEGIN { in_section = 0 }
+          {
+              if ($0 ~ start) {
+                  in_section = 1;
+                  print;
+                  print content;
+                  next;
+              }
+              if ($0 ~ end) {
+                  in_section = 0;
+              }
+              if (!in_section) print;
+          }' "$readme_file" > temp.md && mv temp.md "$readme_file"
 
-          const username = 'gjrahul1';  // Replace with your GitHub username
-          const token = process.env.README_WORKFLOW_DISPLAY;  // Use the secret token
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "Update README with latest activity" || echo "No changes to commit"
 
-          async function fetchActivities() {
-            try {
-              const response = await axios.get('https://api.github.com/users/' + username + '/events/public', {
-                headers: {
-                  Authorization: 'token ' + token
-                }
-              });
-
-              const activities = response.data.map(event => {
-                const repo = event.repo.name;
-                const url = 'https://github.com/' + repo;
-                let action;
-
-                if (event.type === 'PushEvent') {
-                  action = 'pushed to';
-                } else if (event.type === 'PullRequestEvent' && event.payload.action === 'merged') {
-                  action = 'merged into';
-                } else {
-                  action = 'updated in';  // For other updates like PRs opened, issues, etc.
-                }
-
-                return '- ' + action + ' [' + repo + '](' + url + ')';
-              }).join('\\n');
-
-              console.log(activities || 'No recent activities found.');
-            } catch (error) {
-              console.error('Error fetching activities: ' + error.message);
-              process.exit(1);
-            }
-          }
-
-          fetchActivities();
-        "
-      env:
-        README_WORKFLOW_DISPLAY: ${{ secrets.ReadMe_WorkFlow_Display }}  # Reference the secret here
+      - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.README_WORKFLOW_DISPLAY }} # Use your secret token here
+        run: |
+          git push
