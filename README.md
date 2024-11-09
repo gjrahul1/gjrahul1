@@ -39,8 +39,7 @@
   <h2>Recent GitHub Activity</h2>
 
 <!--START_SECTION:activity-->
-
-
+Activity: * aac98bf - Update update-readme.yml (G.J.Rahul) - 11 seconds ago
 <!--END_SECTION:activity-->
 
 </div>
