@@ -20,53 +20,87 @@ jobs:
       uses: actions/github-script@v6
       with:
         script: |
-          const { data: events } = await github.activity.listPublicEventsForUser({
-            username: 'gjrahul1',  # Replace with your GitHub username
-            per_page: 5
-          });
+          try {
+            const { data: events } = await github.activity.listPublicEventsForUser({
+              username: 'gjrahul1',  # Replace with your GitHub username
+              per_page: 5
+            });
 
-          const activities = events.map(event => {
-            const type = event.type;
-            const repo = event.repo.name;
-            const url = `https://github.com/${repo}`;
-            let action;
+            const activities = events.map(event => {
+              const type = event.type;
+              const repo = event.repo.name;
+              const url = `https://github.com/${repo}`;
+              let action;
 
-            switch (type) {
-              case 'PushEvent':
-                action = 'pushed to';
-                break;
-              case 'PullRequestEvent':
-                action = 'opened a pull request in';
-                break;
-              case 'IssuesEvent':
-                action = 'opened an issue in';
-                break;
-              case 'ForkEvent':
-                action = 'forked';
-                break;
-              default:
-                action = 'did something in';
-            }
+              switch (type) {
+                case 'PushEvent':
+                  action = 'pushed to';
+                  break;
+                case 'PullRequestEvent':
+                  action = 'opened a pull request in';
+                  break;
+                case 'IssuesEvent':
+                  action = 'opened an issue in';
+                  break;
+                case 'ForkEvent':
+                  action = 'forked';
+                  break;
+                default:
+                  action = 'did something in';
+              }
 
-            return `- ${action} [${repo}](${url})`;
-          }).join('\n');
+              return `- ${action} [${repo}](${url})`;
+            }).join('\n');
 
-          return activities;
+            return activities;
+          } catch (error) {
+            core.setFailed(`Error fetching activities: ${error.message}`);
+          }
 
-    - name: Update README
-      id: update-readme
+    - name: Log Activities
       run: |
-        readme=$(cat README.md)
+        echo "Fetched Activities: ${{ steps.get-activities.outputs.result }}"
+
+    - name: Check if Activities Exist
+      run: |
         activities="${{ steps.get-activities.outputs.result }}"
+        if [ -z "$activities" ]; then
+          echo "No activities found. Skipping README update."
+          exit 1
+        fi
+
+    - name: Update README with Activities
+      run: |
+        echo "Updating README with activities"
+        activities="${{ steps.get-activities.outputs.result }}"
+        readme=$(cat README.md)
+        echo "Original README content: $readme"
+
+        # Update the README content by replacing the activities section
         updated_readme=$(echo "$readme" | sed -e "/<!--START_SECTION:activity-->/, /<!--END_SECTION:activity-->/c\<!--START_SECTION:activity-->\n$activities\n<!--END_SECTION:activity-->")
+        
+        # Log the updated README content
+        echo "Updated README content: $updated_readme"
+
+        # Write the updated content back to README.md
         echo "$updated_readme" > README.md
 
-    - name: Commit and Push
+    - name: Commit and Push Changes
       run: |
+        echo "Committing changes..."
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        
+        # Check if there are any changes to commit
+        git status
+        
+        # Only commit if there are changes
         git add README.md
-        git commit -m 'Update recent activities in README'
-        git push
+        git diff README.md  # Show the diff to verify changes
+
+        git commit -m 'Update recent activities in README' || echo "No changes to commit"
+
+        # Push the changes to the repo
+        git push || echo "Push failed"
       env:
-        GH_TOKEN: ${{ secrets.ACTIVITIES_PULL }} 
+        GH_TOKEN: ${{ secrets.ACTIVITIES_PULL }}  # Ensure token is in Secrets
