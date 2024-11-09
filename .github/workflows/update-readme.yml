@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 * * * *'  # This will run the workflow every hour (adjust the schedule as needed)
+    - cron: '0 * * * *'  # This will run the workflow every hour (adjust as necessary)
 
 jobs:
   update-readme:
@@ -21,7 +21,7 @@ jobs:
       with:
         script: |
           const { data: events } = await github.activity.listPublicEventsForUser({
-            username: 'gjrahul1',
+            username: 'gjrahul1',  # Replace with your GitHub username
             per_page: 5
           });
 
