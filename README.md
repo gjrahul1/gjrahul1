@@ -39,22 +39,10 @@
   <h2>Recent GitHub Activity</h2>
 
 <!--START_SECTION:activity-->
-- name: Update README
-  id: update-readme
-  run: |
-    readme=$(cat README.md)
-    activities="${{ steps.get-activities.outputs.result }}"
-    updated_readme=$(echo "$readme" | sed -e "/<!--START_SECTION:activity-->/, /<!--END_SECTION:activity-->/c\<!--START_SECTION:activity-->\n$activities\n<!--END_SECTION:activity-->")
-    echo "$updated_readme" > README.md
+
 
 <!--END_SECTION:activity-->
 
-# Projects
-
-- [Meta Scifor Technology](https://github.com/gjrahul1/G-J-Rahul_Meta_Scifor_Technology)
-- [Postman Challenge](https://github.com/GSSoC24/Postman-Challenge)
-- [Artificial Intelligence](https://github.com/gjrahul1/Artifical_Intelligence)
-- [FinVeda](https://github.com/gjrahul1/FinVeda)
 </div>
 
 <h2 align="left">Connect with me:</h2>
