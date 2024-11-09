@@ -25,6 +25,16 @@
     <a href="https://gssoc.girlscript.tech/leaderboard?year=2024&username=gjrahul1"> Take a look at my contributions! </a>
   </p>
 </div>
+
+<div>
+  <h2>My GitHub Stats</h2>
+</div>
+
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=gjrahul1&hide_title=false&hide_rank=false&show_icons=true&include_all_commits=true&count_private=true&disable_animations=false&theme=dracula&locale=en&hide_border=false&order=1" height="150" alt="stats graph"  />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs?username=gjrahul1&locale=en&hide_title=false&layout=compact&card_width=320&langs_count=5&theme=dracula&hide_border=false&order=2" height="150" alt="languages graph"  />
+</div>
+
 <h2 align="left">Connect with me:</h2>
 <p align="left">
 <a href="https://linkedin.com/in/gjrahul" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="gjrahul" height="40" width="50" /></a>
@@ -107,16 +117,6 @@
   </a> 
 </div>
 
-<br>
-
-<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; align-items: center;">
-<!--   <div style="display: inline-block;"> -->
-    <img align="center" src="https://github-readme-stats.vercel.app/api/top-langs?username=gjrahul1&show_icons=true&locale=en&layout=compact" alt="gjrahul1" />
-<!--   </div> -->
-<!--   <div style="display: inline-block;"> -->
-    <img align="center" src="https://github-readme-stats.vercel.app/api?username=gjrahul1&show_icons=true&locale=en" alt="gjrahul1" />
-<!--   </div> -->
-</div>
 
 <!---
 gjrahul1/gjrahul1 is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
