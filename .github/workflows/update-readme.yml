@@ -34,21 +34,13 @@ jobs:
               const url = `https://github.com/${repo}`;
               let action;
 
-              switch (event.type) {
-                case 'PushEvent':
-                  action = 'pushed to';
-                  break;
-                case 'PullRequestEvent':
-                  action = 'opened a pull request in';
-                  break;
-                case 'IssuesEvent':
-                  action = 'opened an issue in';
-                  break;
-                case 'ForkEvent':
-                  action = 'forked';
-                  break;
-                default:
-                  action = 'did something in';
+              // Focus on push, update, and merge actions
+              if (event.type === 'PushEvent') {
+                action = 'pushed to';
+              } else if (event.type === 'PullRequestEvent' && event.payload.action === 'merged') {
+                action = 'merged into';
+              } else {
+                action = 'updated in';  // For other updates like PRs opened, issues, etc.
               }
 
               return `- ${action} [${repo}](${url})`;
@@ -80,10 +72,7 @@ jobs:
         readme=$(cat README.md)
         echo "Original README content: $readme"
 
-        # Escape parentheses by replacing '(' with '\(' and ')' with '\)'
-        activities_escaped=$(echo "$activities" | sed 's/(/\\(/g' | sed 's/)/\\)/g')
-
-        updated_readme=$(echo "$readme" | sed -e "/<!--START_SECTION:activity-->/, /<!--END_SECTION:activity-->/c\<!--START_SECTION:activity-->\n$activities_escaped\n<!--END_SECTION:activity-->")
+        updated_readme=$(echo "$readme" | sed -e "/<!--START_SECTION:activity-->/, /<!--END_SECTION:activity-->/c\<!--START_SECTION:activity-->\n$activities\n<!--END_SECTION:activity-->")
         
         # Log the updated README content
         echo "Updated README content: $updated_readme"
@@ -109,4 +98,4 @@ jobs:
         # Push the changes to the repo
         git push || echo "Push failed"
       env:
-        GH_TOKEN: ${{ secrets.ReadMe_WorkFlow_Display }}  # Correctly reference the secret here
+        GH_TOKEN: ${{secrets.ReadMe_WorkFlow_Display}}  # Correctly reference the secret here
