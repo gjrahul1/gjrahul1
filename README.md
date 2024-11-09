@@ -35,6 +35,20 @@
   <img src="https://github-readme-stats.vercel.app/api/top-langs?username=gjrahul1&locale=en&hide_title=false&layout=compact&card_width=320&langs_count=5&theme=dracula&hide_border=false&order=2" height="150" alt="languages graph"  />
 </div>
 
+<div>
+  <h2>Recent GitHub Activity</h2>
+
+<!--START_SECTION:activity-->
+<!--END_SECTION:activity-->
+
+# Projects
+
+- [Meta Scifor Technology](https://github.com/gjrahul1/G-J-Rahul_Meta_Scifor_Technology)
+- [Postman Challenge](https://github.com/GSSoC24/Postman-Challenge)
+- [Artificial Intelligence](https://github.com/gjrahul1/Artifical_Intelligence)
+- [FinVeda](https://github.com/gjrahul1/FinVeda)
+</div>
+
 <h2 align="left">Connect with me:</h2>
 <p align="left">
 <a href="https://linkedin.com/in/gjrahul" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="gjrahul" height="40" width="50" /></a>
