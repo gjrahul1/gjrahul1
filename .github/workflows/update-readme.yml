@@ -1,70 +1,72 @@
-name: Update README with Recent Activity
+name: Update README with Recent GitHub Activity
 
 on:
+  push:
+    branches:
+      - main
   schedule:
-    - cron: '0 * * * *' # Runs every hour
-  workflow_dispatch:
+    - cron: '0 * * * *'  # This will run the workflow every hour (adjust the schedule as needed)
 
 jobs:
   update-readme:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Pull Recent GitHub Activities
-        id: get-activities
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const { data: events } = await github.activity.listPublicEventsForUser({
-              username: 'gjrahul1',
-              per_page: 5
-            });
+    - name: Pull Recent GitHub Activities
+      id: get-activities
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const { data: events } = await github.activity.listPublicEventsForUser({
+            username: 'gjrahul1',
+            per_page: 5
+          });
 
-            const activities = events.map(event => {
-              const type = event.type;
-              const repo = event.repo.name;
-              const url = `https://github.com/${repo}`;
-              let action;
+          const activities = events.map(event => {
+            const type = event.type;
+            const repo = event.repo.name;
+            const url = `https://github.com/${repo}`;
+            let action;
 
-              switch (type) {
-                case 'PushEvent':
-                  action = 'pushed to';
-                  break;
-                case 'PullRequestEvent':
-                  action = 'opened a pull request in';
-                  break;
-                case 'IssuesEvent':
-                  action = 'opened an issue in';
-                  break;
-                case 'ForkEvent':
-                  action = 'forked';
-                  break;
-                default:
-                  action = 'did something in';
-              }
+            switch (type) {
+              case 'PushEvent':
+                action = 'pushed to';
+                break;
+              case 'PullRequestEvent':
+                action = 'opened a pull request in';
+                break;
+              case 'IssuesEvent':
+                action = 'opened an issue in';
+                break;
+              case 'ForkEvent':
+                action = 'forked';
+                break;
+              default:
+                action = 'did something in';
+            }
 
-              return `- ${action} [${repo}](${url})`;
-            }).join('\n');
+            return `- ${action} [${repo}](${url})`;
+          }).join('\n');
 
-            return activities;
+          return activities;
 
-      - name: Update README
-        id: update-readme
-        run: |
-          readme=$(cat README.md)
-          activities="${{ steps.get-activities.outputs.result }}"
-          updated_readme=$(echo "$readme" | sed -e "/<!--START_SECTION:activity-->/, /<!--END_SECTION:activity-->/c\<!--START_SECTION:activity-->\n$activities\n<!--END_SECTION:activity-->")
-          echo "$updated_readme" > README.md
+    - name: Update README
+      id: update-readme
+      run: |
+        readme=$(cat README.md)
+        activities="${{ steps.get-activities.outputs.result }}"
+        updated_readme=$(echo "$readme" | sed -e "/<!--START_SECTION:activity-->/, /<!--END_SECTION:activity-->/c\<!--START_SECTION:activity-->\n$activities\n<!--END_SECTION:activity-->")
+        echo "$updated_readme" > README.md
 
-      - name: Commit and Push
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add README.md
-          git commit -m 'Update recent activities in README'
-          git push
-        env:
-          GH_TOKEN: ${{secrets.ACTIVITIES_PULL}}
+    - name: Commit and Push
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add README.md
+        git commit -m 'Update recent activities in README'
+        git push
+      env:
+        GH_TOKEN: ${{ secrets.ACTIVITIES_PULL }}
