@@ -1,7 +1,7 @@
 <h1 align="center">Hi 👋, I'm G.J.Rahul</h1>
 <h3 align="center">A passionate Data Scientist from India</h3>
 
-- 👯 I’m looking to collaborate on **Data Science and Data Analyst Projects**
+- 👯 I’m looking to collaborate on **Data Science and Data Analytics Projects**
 - 💫 I'm equally Passionate in Software Development [MERN Stack]
 - 📝 I regularly write articles on [https://thecodejourney.co.in/](https://thecodejourney.co.in/)
 
