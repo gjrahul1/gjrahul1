@@ -1,4 +1,4 @@
-name: Update README with Recent GitHub Activity
+name: Fetch GitHub Activities
 
 on:
   push:
@@ -8,14 +8,14 @@ on:
     - cron: '0 * * * *'  # This will run the workflow every hour (adjust as necessary)
 
 jobs:
-  update-readme:
+  fetch-activities:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Pull Recent GitHub Activities
+    - name: Fetch Recent GitHub Activities
       id: get-activities
       uses: actions/github-script@v6
       with:
@@ -24,9 +24,12 @@ jobs:
           const perPage = 5;  // Number of events to fetch
 
           try {
-            // Use github.request() to call the GitHub API
+            // Use github.request() to call the GitHub API with the provided token
             const { data: events } = await github.request('GET /users/{username}/events/public', {
-              username: username
+              username: username,
+              headers: {
+                authorization: `token ${process.env.README_WORKFLOW_DISPLAY}`  // Use the secret token
+              }
             });
 
             const activities = events.map(event => {
@@ -63,41 +66,10 @@ jobs:
       run: |
         activities="${{ steps.get-activities.outputs.result }}"
         if [ -z "$activities" ]; then
-          echo "No activities found. Skipping README update."
-          exit 1
+          echo "No activities found."
+        else
+          echo "Recent Activities:"
+          echo "$activities"
         fi
-
-    - name: Update README with Activities
-      run: |
-        echo "Updating README with activities"
-        activities="${{ steps.get-activities.outputs.result }}"
-        readme=$(cat README.md)
-        echo "Original README content: $readme"
-
-        updated_readme=$(echo "$readme" | sed -e "/<!--START_SECTION:activity-->/, /<!--END_SECTION:activity-->/c\<!--START_SECTION:activity-->\n$activities\n<!--END_SECTION:activity-->")
-        
-        # Log the updated README content
-        echo "Updated README content: $updated_readme"
-
-        # Write the updated content back to README.md
-        echo "$updated_readme" > README.md
-
-    - name: Commit and Push Changes
-      run: |
-        echo "Committing changes..."
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        
-        # Check if there are any changes to commit
-        git status
-        
-        # Only commit if there are changes
-        git add README.md
-        git diff README.md  # Show the diff to verify changes
-
-        git commit -m 'Update recent activities in README' || echo "No changes to commit"
-
-        # Push the changes to the repo
-        git push || echo "Push failed"
       env:
-        GH_TOKEN: ${{ secrets.ReadMe_WorkFlow_Display }}  # Correctly reference the secret here
+        README_WORKFLOW_DISPLAY: ${{ secrets.ReadMe_WorkFlow_Display }}  # Reference the secret here
