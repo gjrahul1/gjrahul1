@@ -80,8 +80,8 @@ jobs:
         readme=$(cat README.md)
         echo "Original README content: $readme"
 
-        # Escape special characters like parentheses to avoid shell errors
-        activities_escaped=$(echo "$activities" | sed 's/()/\\\(/g' | sed 's/)/\\\)/g')
+        # Escape parentheses by replacing '(' with '\(' and ')' with '\)'
+        activities_escaped=$(echo "$activities" | sed 's/(/\\(/g' | sed 's/)/\\)/g')
 
         updated_readme=$(echo "$readme" | sed -e "/<!--START_SECTION:activity-->/, /<!--END_SECTION:activity-->/c\<!--START_SECTION:activity-->\n$activities_escaped\n<!--END_SECTION:activity-->")
         
