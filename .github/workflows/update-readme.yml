@@ -43,7 +43,9 @@ jobs:
                 action = 'updated in';  // For other updates like PRs opened, issues, etc.
               }
 
-              return `- ${action} [${repo}](${url})`;
+              // Escape parentheses to avoid syntax issues
+              const safeRepoUrl = url.replace(/[()]/g, '\\$&');
+              return `- ${action} [${repo}](${safeRepoUrl})`;
             }).join('\n');
 
             return activities;
@@ -98,4 +100,4 @@ jobs:
         # Push the changes to the repo
         git push || echo "Push failed"
       env:
-        GH_TOKEN: ${{secrets.ReadMe_WorkFlow_Display}}  # Correctly reference the secret here
+        GH_TOKEN: ${{ secrets.ReadMe_WorkFlow_Display }}  # Correctly reference the secret here
