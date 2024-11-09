@@ -35,15 +35,15 @@ jobs:
 
           async function fetchActivities() {
             try {
-              const response = await axios.get(`https://api.github.com/users/${username}/events/public`, {
+              const response = await axios.get('https://api.github.com/users/' + username + '/events/public', {
                 headers: {
-                  Authorization: `token ${token}`
+                  Authorization: 'token ' + token
                 }
               });
 
               const activities = response.data.map(event => {
                 const repo = event.repo.name;
-                const url = `https://github.com/${repo}`;
+                const url = 'https://github.com/' + repo;
                 let action;
 
                 if (event.type === 'PushEvent') {
@@ -54,12 +54,12 @@ jobs:
                   action = 'updated in';  // For other updates like PRs opened, issues, etc.
                 }
 
-                return `- ${action} [${repo}](${url})`;
+                return '- ' + action + ' [' + repo + '](' + url + ')';
               }).join('\\n');
 
               console.log(activities || 'No recent activities found.');
             } catch (error) {
-              console.error(`Error fetching activities: ${error.message}`);
+              console.error('Error fetching activities: ' + error.message);
               process.exit(1);
             }
           }
