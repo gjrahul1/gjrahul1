@@ -80,8 +80,10 @@ jobs:
         readme=$(cat README.md)
         echo "Original README content: $readme"
 
-        # Escape special characters in activities string to avoid shell errors
-        updated_readme=$(echo "$readme" | sed -e "/<!--START_SECTION:activity-->/, /<!--END_SECTION:activity-->/c\<!--START_SECTION:activity-->\n$activities\n<!--END_SECTION:activity-->")
+        # Escape special characters like parentheses to avoid shell errors
+        activities_escaped=$(echo "$activities" | sed 's/()/\\\(/g' | sed 's/)/\\\)/g')
+
+        updated_readme=$(echo "$readme" | sed -e "/<!--START_SECTION:activity-->/, /<!--END_SECTION:activity-->/c\<!--START_SECTION:activity-->\n$activities_escaped\n<!--END_SECTION:activity-->")
         
         # Log the updated README content
         echo "Updated README content: $updated_readme"
@@ -107,4 +109,4 @@ jobs:
         # Push the changes to the repo
         git push || echo "Push failed"
       env:
-        GH_TOKEN: ${{secrets.ReadMe_WorkFlow_Display}}  # Correctly reference the secret here
+        GH_TOKEN: ${{ secrets.ReadMe_WorkFlow_Display }}  # Correctly reference the secret here
