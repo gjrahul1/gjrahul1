@@ -106,4 +106,4 @@ jobs:
         # Push the changes to the repo
         git push || echo "Push failed"
       env:
-        ACTIVITIES_PULL: ${{ secrets.ACTIVITIES_PULL }}  # Ensure the secret ACTIVITIES_PULL is in Secrets
+        ReadMe_WorkFlow_Display: ${{ secrets.ReadMe_WorkFlow_Display }}  # Use the secret 'ReadMe_WorkFlow_Display'
