@@ -54,7 +54,7 @@ Activity: * f49660c - Update README.md (G.J.Rahul) - 11 seconds ago
 
 <h2 align="left">Languages and Tools:</h2>
 
-## Programming Languages
+### Programming Languages
 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; align-items: center;">
  
   <a href="https://www.python.org" target="_blank" rel="noreferrer"> 
