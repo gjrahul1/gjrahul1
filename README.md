@@ -26,6 +26,12 @@
   </p>
 </div>
 
+<div align = 'center'>
+<h2>My Certifications</h2>
+
+  <img src = "https://i.ibb.co/Frm3vNf/aws-educate-introduction-to-cloud-101.png" alt="AWS Cloud Computing 101 Badge" width = '150'>
+  </div>
+  
 <div>
   <h2>My GitHub Stats</h2>
 </div>
